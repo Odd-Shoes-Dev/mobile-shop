@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Archivo_Black, Atkinson_Hyperlegible } from "next/font/google";
-import { AssistantFab } from "@/components/AssistantFab";
 import { BottomBar } from "@/components/BottomBar";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { AssistantWidget } from "@/features/assistant/components/AssistantWidget";
+import { CartDrawer } from "@/features/cart/components/CartDrawer";
+import { CartProvider } from "@/features/cart/context/CartContext";
 import "./globals.css";
 
 const display = Archivo_Black({
@@ -28,14 +30,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${display.variable} ${body.variable}`}>
       <body>
-        <a className="skip" href="#main">
-          Skip to content
-        </a>
-        <Header />
-        <main id="main">{children}</main>
-        <Footer />
-        <AssistantFab />
-        <BottomBar />
+        <CartProvider>
+          <a className="skip" href="#main">
+            Skip to content
+          </a>
+          <Header />
+          <main id="main">{children}</main>
+          <Footer />
+          <AssistantWidget />
+          <BottomBar />
+          <CartDrawer />
+        </CartProvider>
       </body>
     </html>
   );

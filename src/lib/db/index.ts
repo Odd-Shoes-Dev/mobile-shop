@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { getDb } from "./client";
 import { deliveryZones, orders, paymentMethods, products, type OrderLine } from "./schema";
 
@@ -52,4 +52,11 @@ export async function createOrder(input: {
 export async function getOrderById(id: string): Promise<Order | undefined> {
   const rows = await getDb().select().from(orders).where(eq(orders.id, id));
   return rows[0];
+}
+
+export async function decrementProductStock(id: string, qty: number): Promise<void> {
+  await getDb()
+    .update(products)
+    .set({ stock: sql`greatest(${products.stock} - ${qty}, 0)` })
+    .where(eq(products.id, id));
 }

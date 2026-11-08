@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { CartButton } from "@/features/cart/components/CartButton";
 
 const NAV_LINKS = [
   { href: "/mission/game", label: "Game" },
@@ -33,18 +34,16 @@ export function Header() {
             </Link>
           ))}
         </nav>
-        <form className="search" role="search">
+        <form className="search" role="search" action="/shop" method="get">
           <label className="sr" htmlFor="q">
             Search products
           </label>
-          <input id="q" type="search" placeholder="Search laptops, mice, bags" autoComplete="off" />
+          <input id="q" name="q" type="search" placeholder="Search laptops, mice, bags" autoComplete="off" />
           <button className="btn btn--sm" type="submit">
             Go
           </button>
         </form>
-        <button type="button" className="cartbtn" aria-label="Open cart">
-          Cart <b>0</b>
-        </button>
+        <CartButton />
       </header>
     </>
   );

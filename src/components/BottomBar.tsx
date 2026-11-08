@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CartButton } from "@/features/cart/components/CartButton";
 
 export function BottomBar() {
   return (
@@ -9,9 +10,7 @@ export function BottomBar() {
       <Link href="/shop">Shop</Link>
       <Link href="/compare">Compare</Link>
       <Link href="/quiz">Quiz</Link>
-      <button type="button">
-        Cart <b>0</b>
-      </button>
+      <CartButton variant="bottombar" />
     </nav>
   );
 }

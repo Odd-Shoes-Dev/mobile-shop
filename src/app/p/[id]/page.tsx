@@ -1,11 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArtIcon } from "@/components/ArtIcon";
+import { AddToCartButton } from "@/features/cart/components/AddToCartButton";
 import { ProductCard } from "@/features/catalogue/components/ProductCard";
 import { USE_CASE_NAMES, benefitsFor } from "@/features/catalogue/lib/benefits";
 import { effectivePrice, formatUgx } from "@/features/catalogue/lib/format";
 import { mapToDetail, mapToSummary, resolveAvailability } from "@/features/catalogue/lib/mapToSummary";
 import { getProductById, listProducts } from "@/lib/db";
+
+// Reads params and hits the database on every request — nothing meaningful
+// to prerender, so skip static generation.
+export const instant = false;
 
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -61,9 +66,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
           </div>
           <p>{product.description}</p>
           <div className="card__actions">
-            <button className="btn" type="button" disabled={out}>
-              {out ? "Out of stock" : "Add to cart"}
-            </button>
+            <AddToCartButton id={product.id} disabled={out} outLabel="Out of stock" className="btn" />
             <span className="notice">WhatsApp number not set yet. Add it in config.</span>
           </div>
         </div>

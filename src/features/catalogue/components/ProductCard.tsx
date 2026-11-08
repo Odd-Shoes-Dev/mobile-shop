@@ -1,12 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArtIcon } from "@/components/ArtIcon";
+import { AddToCartButton } from "@/features/cart/components/AddToCartButton";
 import { effectivePrice, formatUgx } from "../lib/format";
 import { miniSpecs, resolveAvailability } from "../lib/mapToSummary";
 import type { ProductSummary } from "../types";
 
 /** Ported from the prototype's `cardHtml()` / `art()` / `priceHtml()` / `availPill()`. */
-export function ProductCard({ product }: { product: ProductSummary }) {
+export function ProductCard({ product, why }: { product: ProductSummary; why?: string[] }) {
   const availability = resolveAvailability(product);
   const out = availability.key === "out";
   const specs = miniSpecs(product);
@@ -44,6 +45,14 @@ export function ProductCard({ product }: { product: ProductSummary }) {
         </ul>
       )}
 
+      {why && why.length > 0 && (
+        <ul className="why">
+          {why.map((w) => (
+            <li key={w}>{w}</li>
+          ))}
+        </ul>
+      )}
+
       <div>
         <span className="price">
           {discounted && <s>{formatUgx(product.price)}</s>}
@@ -53,9 +62,7 @@ export function ProductCard({ product }: { product: ProductSummary }) {
       </div>
 
       <div className="card__actions">
-        <button className="btn btn--sm" type="button" disabled={out}>
-          {out ? "Unavailable" : "Add to cart"}
-        </button>
+        <AddToCartButton id={product.id} disabled={out} />
         {product.category === "laptop" && (
           <button className="chip" type="button" aria-pressed="false">
             Compare
