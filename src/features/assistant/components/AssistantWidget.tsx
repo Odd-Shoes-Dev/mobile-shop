@@ -42,7 +42,23 @@ export function AssistantWidget() {
   }, [isOpen]);
 
   useEffect(() => {
-    if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight;
+    const container = logRef.current;
+    const last = messages[messages.length - 1];
+    if (!container || !last) return;
+    if (last.role === "assistant" && !last.typing) {
+      // A long reply (plus product cards) would otherwise land scrolled to
+      // its end, forcing a scroll back up just to start reading it — show
+      // its start instead of the container's absolute bottom. scrollIntoView
+      // (rather than computing offsetTop by hand) scrolls the nearest
+      // scrollable ancestor correctly regardless of the panel's own
+      // position: fixed, which otherwise throws off offset-based math.
+      const lastEl = container.lastElementChild as HTMLElement | null;
+      lastEl?.scrollIntoView({ block: "start" });
+    } else {
+      // Sending a message or waiting on the typing indicator: keep the
+      // usual chat behavior of following the bottom.
+      container.scrollTop = container.scrollHeight;
+    }
   }, [messages]);
 
   const sendRef = useRef<(text: string) => void>(() => {});
