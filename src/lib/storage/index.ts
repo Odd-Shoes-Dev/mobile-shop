@@ -11,12 +11,13 @@ export function getStorage(): StorageProvider {
     const publicKey = process.env.IMAGEKIT_PUBLIC_KEY;
     const privateKey = process.env.IMAGEKIT_PRIVATE_KEY;
     const urlEndpoint = process.env.IMAGEKIT_URL_ENDPOINT;
+    const baseFolder = process.env.IMAGEKIT_FOLDER;
     if (!publicKey || !privateKey || !urlEndpoint) {
       throw new Error(
         "Missing ImageKit env vars: IMAGEKIT_PUBLIC_KEY, IMAGEKIT_PRIVATE_KEY, IMAGEKIT_URL_ENDPOINT"
       );
     }
-    instance = new ImageKitStorageProvider({ publicKey, privateKey, urlEndpoint });
+    instance = new ImageKitStorageProvider({ publicKey, privateKey, urlEndpoint, baseFolder });
   }
   return instance;
 }

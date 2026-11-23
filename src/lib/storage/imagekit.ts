@@ -17,18 +17,27 @@ export class ImageKitStorageProvider implements StorageProvider {
   private client: ImageKit;
   private publicKey: string;
   private urlEndpoint: string;
+  private baseFolder: string | null;
 
-  constructor(config: { publicKey: string; privateKey: string; urlEndpoint: string }) {
+  constructor(config: { publicKey: string; privateKey: string; urlEndpoint: string; baseFolder?: string }) {
     this.client = new ImageKit({ privateKey: config.privateKey });
     this.publicKey = config.publicKey;
     this.urlEndpoint = config.urlEndpoint;
+    this.baseFolder = config.baseFolder ? config.baseFolder.replace(/^\/+|\/+$/g, "") : null;
+  }
+
+  /** Scopes every upload under the account's base media-library folder (e.g. "mobile-shop"), so this app never writes outside its own space. */
+  private resolveFolder(folder: string): string {
+    const trimmed = folder.replace(/^\/+|\/+$/g, "");
+    if (!this.baseFolder) return "/" + trimmed;
+    return trimmed ? `/${this.baseFolder}/${trimmed}` : `/${this.baseFolder}`;
   }
 
   async upload(input: UploadInput): Promise<UploadResult> {
     const response = await this.client.files.upload({
       file: input.file as never,
       fileName: input.fileName,
-      folder: input.folder,
+      folder: this.resolveFolder(input.folder),
       useUniqueFileName: input.uniqueFileName ?? true,
       tags: input.tags,
     });

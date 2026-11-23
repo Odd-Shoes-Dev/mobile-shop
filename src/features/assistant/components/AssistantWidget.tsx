@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useCatalogue } from "@/features/cart/hooks/useCatalogue";
 import { AssistantCard, type AssistantCardData } from "./AssistantCard";
+import { OPEN_ASSISTANT_EVENT, type OpenAssistantDetail } from "./AskAssistantButton";
 
 interface ChatMessage {
   role: "user" | "assistant";
@@ -43,6 +44,18 @@ export function AssistantWidget() {
   useEffect(() => {
     if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight;
   }, [messages]);
+
+  const sendRef = useRef<(text: string) => void>(() => {});
+
+  useEffect(() => {
+    function onOpenRequest(e: Event) {
+      setIsOpen(true);
+      const detail = (e as CustomEvent<OpenAssistantDetail>).detail;
+      if (detail?.message) sendRef.current(detail.message);
+    }
+    window.addEventListener(OPEN_ASSISTANT_EVENT, onOpenRequest);
+    return () => window.removeEventListener(OPEN_ASSISTANT_EVENT, onOpenRequest);
+  }, []);
 
   async function send(text: string) {
     const trimmed = text.trim();
@@ -86,6 +99,10 @@ export function AssistantWidget() {
       ]);
     }
   }
+
+  useEffect(() => {
+    sendRef.current = send;
+  });
 
   if (!isOpen) {
     return (

@@ -8,7 +8,7 @@ export interface UploadInput {
   file: Buffer | string | NodeJS.ReadableStream;
   /** Name to store the file as. */
   fileName: string;
-  /** Logical folder path, e.g. "/products" or "/mission". */
+  /** Logical folder path, e.g. "products" or "mission" — relative to the provider's configured base folder (IMAGEKIT_FOLDER), not an absolute path. */
   folder: string;
   /** If false, keeps the exact fileName instead of appending a unique suffix. */
   uniqueFileName?: boolean;

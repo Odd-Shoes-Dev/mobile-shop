@@ -18,8 +18,14 @@ function asCategory(value: string): ArtCategory {
   return (KNOWN_CATEGORIES as string[]).includes(value) ? (value as ArtCategory) : "storage";
 }
 
+/** A stored image can be a full external URL (used as-is) or an ImageKit-relative path (resolved through the storage adapter). */
+function resolveImageUrl(stored: string | undefined): string | null {
+  if (!stored) return null;
+  if (/^https?:\/\//.test(stored)) return stored;
+  return getStorage().getUrl(stored, { width: 400 });
+}
+
 export function mapToSummary(p: Product): ProductSummary {
-  const firstImage = p.images[0];
   return {
     id: p.id,
     name: p.name,
@@ -31,7 +37,7 @@ export function mapToSummary(p: Product): ProductSummary {
     specs: p.specs,
     availability: p.availability as ProductSummary["availability"],
     stock: p.stock,
-    imageUrl: firstImage ? getStorage().getUrl(firstImage, { width: 400 }) : null,
+    imageUrl: resolveImageUrl(p.images[0]),
     isSample: p.sample,
   };
 }

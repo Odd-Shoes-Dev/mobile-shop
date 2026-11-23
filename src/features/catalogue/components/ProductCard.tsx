@@ -19,7 +19,13 @@ export function ProductCard({ product, why }: { product: ProductSummary; why?: s
     <article className="card">
       <div className="art">
         {product.imageUrl ? (
-          <Image src={product.imageUrl} alt={product.name} fill style={{ objectFit: "contain" }} />
+          <Image
+            src={product.imageUrl}
+            alt={product.name}
+            fill
+            sizes="(max-width: 600px) 90vw, 280px"
+            style={{ objectFit: "contain" }}
+          />
         ) : (
           <ArtIcon category={product.category} seed={product.id} />
         )}
